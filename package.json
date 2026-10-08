@@ -1,0 +1,35 @@
+{
+  "name": "subvault-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Production-ready C2C digital subscription marketplace platform",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev:api & npm run dev:web",
+    "dev:api": "npm --workspace=apps/api run start:dev",
+    "dev:web": "npm --workspace=apps/web run dev",
+    "build": "npm run build:packages && npm run build:api && npm run build:web",
+    "build:packages": "npm --workspace=packages/types run build --if-present",
+    "build:api": "npm --workspace=apps/api run build",
+    "build:web": "npm --workspace=apps/web run build",
+    "prisma:generate": "npx prisma generate",
+    "prisma:migrate": "npx prisma migrate dev",
+    "prisma:push": "npx prisma db push",
+    "prisma:seed": "npx prisma db seed",
+    "test": "npm --workspace=apps/api run test",
+    "lint": "npm --workspace=apps/api run lint && npm --workspace=apps/web run lint"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "typescript": "^5.7.2",
+    "prisma": "^6.4.1",
+    "@prisma/client": "^6.4.1",
+    "tsx": "^4.19.2"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  }
+}
