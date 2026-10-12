@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Patch, Param, Body } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { SellersService } from './sellers.service';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -17,6 +17,17 @@ export class SellersController {
   @ApiOperation({ summary: 'Get full seller analytics dashboard data' })
   async getDashboard(@CurrentUser('id') userId: string) {
     return this.sellersService.getDashboard(userId);
+  }
+
+  @Patch('profile')
+  @Roles(RoleType.SELLER, RoleType.ADMIN, RoleType.SUPER_ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update seller profile details' })
+  async updateProfile(
+    @CurrentUser('id') userId: string,
+    @Body() dto: { fullName?: string; phone?: string; bio?: string; avatarUrl?: string },
+  ) {
+    return this.sellersService.updateProfile(userId, dto);
   }
 
   @Public()

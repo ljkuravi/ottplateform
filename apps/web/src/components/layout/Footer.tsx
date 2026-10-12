@@ -1,35 +1,34 @@
 import React from 'react';
 import Link from 'next/link';
-import { Sparkles, Shield, Lock, Zap, Heart } from 'lucide-react';
+import { Shield, Lock, Zap, Heart } from 'lucide-react';
 
 export function Footer() {
   return (
-    <footer className="w-full border-t border-surface-300/40 bg-surface-50/80 pt-16 pb-12 mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-surface-300/40">
+    <footer className="w-full border-t border-slate-200 bg-white pt-14 pb-10 mt-auto">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-slate-200">
           {/* Brand Column */}
           <div className="lg:col-span-2 flex flex-col gap-4">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center shadow-glow">
-                <Sparkles className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-xl font-bold tracking-tight text-white">
-                Sub<span className="text-brand-400">Vault</span>
-              </span>
+            <Link href="/" className="flex items-center gap-2 select-none py-1">
+              <img
+                src="/logo.png"
+                alt="Ottly"
+                className="h-8 w-auto object-contain max-w-[130px]"
+              />
             </Link>
-            <p className="text-sm text-slate-400 max-w-sm leading-relaxed">
-              India&apos;s modern peer-to-peer digital subscription marketplace. Buy and share OTT, AI tools, design suites, and cloud access with encrypted delivery and buyer protection.
+            <p className="text-sm text-slate-500 max-w-sm leading-relaxed">
+              India&apos;s verified digital subscription sharing platform. Access top OTT, AI tools, and creative apps with escrow protection.
             </p>
-            <div className="flex items-center gap-4 text-xs text-slate-400 pt-2">
-              <div className="flex items-center gap-1.5 text-emerald-400">
+            <div className="flex items-center gap-4 text-xs text-slate-500 pt-1">
+              <div className="flex items-center gap-1.5 text-emerald-600 font-semibold">
                 <Shield className="w-4 h-4" />
                 <span>Escrow Protected</span>
               </div>
-              <div className="flex items-center gap-1.5 text-indigo-400">
+              <div className="flex items-center gap-1.5 text-slate-600">
                 <Lock className="w-4 h-4" />
                 <span>AES-256 Encrypted</span>
               </div>
-              <div className="flex items-center gap-1.5 text-cyan-400">
+              <div className="flex items-center gap-1.5 text-slate-600">
                 <Zap className="w-4 h-4" />
                 <span>Instant Delivery</span>
               </div>
@@ -37,47 +36,39 @@ export function Footer() {
           </div>
 
           {/* Categories */}
-          <div className="flex flex-col gap-3">
-            <h4 className="text-xs font-semibold text-white uppercase tracking-wider">Top Categories</h4>
-            <Link href="/browse?category=ott-streaming" className="text-sm text-slate-400 hover:text-white transition-colors">OTT & Streaming</Link>
-            <Link href="/browse?category=ai-tools" className="text-sm text-slate-400 hover:text-white transition-colors">AI & Machine Learning</Link>
-            <Link href="/browse?category=design-creative" className="text-sm text-slate-400 hover:text-white transition-colors">Design & Creative</Link>
-            <Link href="/browse?category=music-audio" className="text-sm text-slate-400 hover:text-white transition-colors">Music & Podcasts</Link>
-            <Link href="/browse?category=vpn-cloud" className="text-sm text-slate-400 hover:text-white transition-colors">VPN & Security</Link>
+          <div className="flex flex-col gap-2.5">
+            <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Top Categories</h4>
+            <Link href="/browse?category=ott-streaming" className="text-xs text-slate-600 hover:text-emerald-600 transition-colors">OTT Platforms</Link>
+            <Link href="/browse?category=ai-tools" className="text-xs text-slate-600 hover:text-emerald-600 transition-colors">AI Tools</Link>
+            <Link href="/browse?category=design-creative" className="text-xs text-slate-600 hover:text-emerald-600 transition-colors">Design Tools</Link>
+            <Link href="/browse?category=games" className="text-xs text-slate-600 hover:text-emerald-600 transition-colors">Games</Link>
+            <Link href="/browse?category=vpn-cloud" className="text-xs text-slate-600 hover:text-emerald-600 transition-colors">VPN & Cloud</Link>
           </div>
 
           {/* Marketplace */}
-          <div className="flex flex-col gap-3">
-            <h4 className="text-xs font-semibold text-white uppercase tracking-wider">Marketplace</h4>
-            <Link href="/browse" className="text-sm text-slate-400 hover:text-white transition-colors">Browse All Listings</Link>
-            <Link href="/become-seller" className="text-sm text-slate-400 hover:text-white transition-colors">Become a Seller</Link>
-            <Link href="/#how-it-works" className="text-sm text-slate-400 hover:text-white transition-colors">How It Works</Link>
-            <Link href="/wallet" className="text-sm text-slate-400 hover:text-white transition-colors">Add Money & Wallet</Link>
-            <Link href="/orders" className="text-sm text-slate-400 hover:text-white transition-colors">My Subscriptions</Link>
+          <div className="flex flex-col gap-2.5">
+            <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Marketplace</h4>
+            <Link href="/browse" className="text-xs text-slate-600 hover:text-emerald-600 transition-colors">Browse All Listings</Link>
+            <Link href="/become-seller" className="text-xs text-slate-600 hover:text-emerald-600 transition-colors">Become a Seller</Link>
+            <Link href="/wallet" className="text-xs text-slate-600 hover:text-emerald-600 transition-colors">Add Money & Wallet</Link>
+            <Link href="/orders" className="text-xs text-slate-600 hover:text-emerald-600 transition-colors">Order History</Link>
           </div>
 
-          {/* Legal & Safety */}
-          <div className="flex flex-col gap-3">
-            <h4 className="text-xs font-semibold text-white uppercase tracking-wider">Trust & Legal</h4>
-            <Link href="/terms" className="text-sm text-slate-400 hover:text-white transition-colors">Terms of Service</Link>
-            <Link href="/privacy" className="text-sm text-slate-400 hover:text-white transition-colors">Privacy Policy</Link>
-            <Link href="/refund-policy" className="text-sm text-slate-400 hover:text-white transition-colors">Refund & Dispute Policy</Link>
-            <Link href="/acceptable-use" className="text-sm text-slate-400 hover:text-white transition-colors">Acceptable Use Policy</Link>
-            <Link href="/seller-policy" className="text-sm text-slate-400 hover:text-white transition-colors">Seller Guidelines</Link>
-            <Link href="/contact" className="text-sm text-slate-400 hover:text-white transition-colors">Contact Support</Link>
+          {/* Support */}
+          <div className="flex flex-col gap-2.5">
+            <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Support & Legal</h4>
+            <Link href="/contact" className="text-xs text-slate-600 hover:text-emerald-600 transition-colors">Contact Us</Link>
+            <Link href="/terms" className="text-xs text-slate-600 hover:text-emerald-600 transition-colors">Terms of Service</Link>
+            <Link href="/privacy" className="text-xs text-slate-600 hover:text-emerald-600 transition-colors">Privacy Policy</Link>
+            <Link href="/refund-policy" className="text-xs text-slate-600 hover:text-emerald-600 transition-colors">Refund Policy</Link>
           </div>
         </div>
 
-        {/* Disclaimer Notice */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <p className="text-center md:text-left max-w-3xl leading-relaxed">
-            Disclaimer: SubVault is an independent marketplace facilitator connecting private buyers and authorized resellers. Third-party brand names, logos, and trademarks (including Netflix, Amazon Prime, Spotify, OpenAI, Canva, Disney+ Hotstar) are properties of their respective owners and used solely for identification. Sellers represent and warrant they are legally authorized to share or resell their listings.
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
+          <p>© {new Date().getFullYear()} Ottly Inc. All rights reserved.</p>
+          <p className="flex items-center gap-1">
+            Made with <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" /> for verified subscription sharing
           </p>
-          <div className="flex items-center gap-1 text-slate-400 shrink-0">
-            <span>&copy; {new Date().getFullYear()} SubVault. Built with</span>
-            <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
-            <span>in India.</span>
-          </div>
         </div>
       </div>
     </footer>

@@ -65,6 +65,11 @@ export class CreateListingDto {
   @IsEnum(AccessType)
   accessType: AccessType;
 
+  @ApiProperty({ example: 'Shared', required: false })
+  @IsOptional()
+  @IsString()
+  accountType?: string;
+
   @ApiProperty({ example: '1 Screen' })
   @IsString()
   deviceLimit: string;
@@ -124,6 +129,11 @@ export class UpdateListingDto {
   @IsOptional()
   @IsEnum(ListingStatus)
   status?: ListingStatus;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  accountType?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()

@@ -10,6 +10,9 @@ export class SellersService {
       where: { userId },
       include: {
         sellerWallet: true,
+        user: {
+          select: { fullName: true, phone: true, email: true, avatarUrl: true },
+        },
       },
     });
 
@@ -113,5 +116,33 @@ export class SellersService {
     }
 
     return profile;
+  }
+
+  async updateProfile(userId: string, data: { fullName?: string; phone?: string; bio?: string; avatarUrl?: string }) {
+    const profile = await this.prisma.sellerProfile.findUnique({ where: { userId } });
+    if (!profile) throw new NotFoundException('Seller profile not found');
+
+    if (data.fullName !== undefined || data.phone !== undefined || data.avatarUrl !== undefined) {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: {
+          fullName: data.fullName,
+          phone: data.phone,
+          avatarUrl: data.avatarUrl,
+        },
+      });
+    }
+
+    return this.prisma.sellerProfile.update({
+      where: { userId },
+      data: {
+        displayName: data.fullName || profile.displayName,
+        bio: data.bio !== undefined ? data.bio : profile.bio,
+      },
+      include: {
+        user: { select: { fullName: true, phone: true, email: true, avatarUrl: true } },
+        sellerWallet: true,
+      },
+    });
   }
 }

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { formatCurrency } from '@/lib/utils';
 import { useCart } from '@/lib/cart-context';
-import { Star, ShieldCheck, Zap, Monitor, Sparkles, ShoppingBag } from 'lucide-react';
+import { ShieldCheck, Bookmark, ShoppingCart, UserCheck } from 'lucide-react';
 
 interface ListingCardProps {
   listing: {
@@ -21,6 +21,7 @@ interface ListingCardProps {
     quality: string;
     availableStock: number;
     isFeatured?: boolean;
+    createdAt?: string;
     platform: {
       name: string;
       logoUrl: string;
@@ -42,10 +43,6 @@ export function ListingCard({ listing }: { listing: ListingCardProps['listing'] 
   const router = useRouter();
   const { addToCart } = useCart();
 
-  const discountPercent = listing.originalPrice && listing.originalPrice > listing.price
-    ? Math.round(((listing.originalPrice - listing.price) / listing.originalPrice) * 100)
-    : null;
-
   const accessLabel = listing.accessType.replace(/_/g, ' ');
 
   const handleBuyNow = async (e: React.MouseEvent) => {
@@ -63,114 +60,119 @@ export function ListingCard({ listing }: { listing: ListingCardProps['listing'] 
     await addToCart(listing.id);
   };
 
+  const isPrivate = listing.accessType.toLowerCase().includes('private');
+
   return (
-    <div className="group glass-card rounded-2xl overflow-hidden flex flex-col justify-between relative border border-surface-300/40 hover:border-brand-500/50 transition-all duration-300">
-      {/* Featured Pill */}
-      {listing.isFeatured && (
-        <div className="absolute top-3 left-3 z-10 px-2.5 py-0.5 rounded-full bg-brand-600/90 backdrop-blur-sm border border-brand-400 text-white text-[10px] font-bold flex items-center gap-1 shadow-glow">
-          <Sparkles className="w-3 h-3 text-amber-300" />
-          <span>FEATURED</span>
-        </div>
-      )}
-
-      {/* Stock status indicator */}
-      <div className="absolute top-3 right-3 z-10 px-2 py-0.5 rounded-full bg-surface-50/80 backdrop-blur-sm border border-surface-300/40 text-[11px] font-medium text-slate-300 flex items-center gap-1">
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-        <span>{listing.availableStock} in stock</span>
-      </div>
-
-      {/* Top Banner & Platform Brand */}
-      <Link href={`/listings/${listing.slug}`} className="block p-5 pb-4">
-        <div className="flex items-center gap-3.5 mb-3.5">
-          <div className="w-12 h-12 rounded-xl overflow-hidden bg-surface-100 border border-surface-300/50 flex-shrink-0 flex items-center justify-center p-1">
-            <img
-              src={listing.platform.logoUrl}
-              alt={listing.platform.name}
-              className="w-full h-full object-cover rounded-lg"
-            />
-          </div>
-          <div className="min-w-0">
-            <span className="text-[11px] uppercase tracking-wider font-semibold text-brand-400 block truncate">
-              {listing.platform.name}
+    <div className="bg-white rounded-2xl border border-[#E2E8F0] hover:border-emerald-300 p-5 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between h-full group">
+      <div>
+        {/* Top Header: Time ago & Trusted Host badge + Bookmark */}
+        <div className="flex items-center justify-between pb-3 text-xs text-[#64748B]">
+          <span className="text-[11px] font-medium">Verified Slot</span>
+          <div className="flex items-center gap-2">
+            <span className="flex items-center gap-1 text-[#059669] font-bold text-[11px] bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              Trusted Host
             </span>
-            <h3 className="text-sm font-bold text-white leading-snug line-clamp-2 group-hover:text-brand-300 transition-colors">
-              {listing.title}
-            </h3>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              className="text-slate-400 hover:text-slate-600 cursor-pointer"
+              title="Save listing"
+            >
+              <Bookmark className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
 
-        {/* Specs Badges */}
-        <div className="flex flex-wrap items-center gap-1.5 my-3">
-          <span className="px-2 py-0.5 rounded-md bg-surface-100 border border-surface-300/50 text-[11px] font-medium text-slate-300">
-            {listing.durationMonths} {listing.durationMonths === 1 ? 'Month' : 'Months'}
-          </span>
-          <span className="px-2 py-0.5 rounded-md bg-surface-100 border border-surface-300/50 text-[11px] font-medium text-indigo-300 capitalize">
-            {accessLabel.toLowerCase()}
-          </span>
-          <span className="px-2 py-0.5 rounded-md bg-surface-100 border border-surface-300/50 text-[11px] font-medium text-cyan-300">
-            {listing.quality}
-          </span>
-          <span className="px-2 py-0.5 rounded-md bg-surface-100 border border-surface-300/50 text-[11px] font-medium text-slate-400 flex items-center gap-1">
-            <Monitor className="w-3 h-3" />
-            {listing.deviceLimit}
-          </span>
-        </div>
+        {/* Platform logo & Title */}
+        <Link href={`/listings/${listing.slug}`} className="block">
+          <div className="flex items-start gap-3 my-2">
+            <div className="w-9 h-9 rounded-xl overflow-hidden bg-slate-50 border border-[#E2E8F0] flex-shrink-0 flex items-center justify-center p-0.5 shadow-2xs">
+              <img
+                src={listing.platform.logoUrl}
+                alt={listing.platform.name}
+                className="w-full h-full object-cover rounded-lg"
+              />
+            </div>
+            <div className="min-w-0">
+              <h3 className="text-sm font-bold text-[#101828] leading-snug group-hover:text-[#059669] transition-colors line-clamp-2">
+                {listing.title}
+              </h3>
+            </div>
+          </div>
 
-        {/* Pricing Area */}
-        <div className="flex items-baseline gap-2 pt-2 border-t border-surface-300/30">
-          <span className="text-xl font-extrabold text-white tracking-tight">
-            {formatCurrency(listing.price)}
-          </span>
-          {listing.originalPrice && (
-            <span className="text-xs text-slate-400 line-through">
-              {formatCurrency(listing.originalPrice)}
+          {/* Plan & Quality + Account Type badge */}
+          <div className="flex flex-wrap items-center gap-2 mt-2 mb-2 text-xs">
+            <span className="font-medium text-[#64748B]">
+              Plan: <span className="text-[#101828] font-semibold">{listing.quality || '4K Video Quality'}</span>
             </span>
-          )}
-          {discountPercent && (
-            <span className="ml-auto text-xs font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800 px-1.5 py-0.5 rounded-md">
-              {discountPercent}% OFF
-            </span>
-          )}
-        </div>
-      </Link>
-
-      {/* Seller info & action buttons */}
-      <div className="p-4 pt-3 bg-surface-100/50 border-t border-surface-300/30 flex flex-col gap-3">
-        <div className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-1.5 min-w-0">
-            <span className="text-slate-400 text-[11px]">Seller:</span>
-            <span className="font-medium text-slate-200 truncate max-w-[120px]">
-              {listing.seller.displayName}
-            </span>
-            {listing.seller.isVerified && (
-              <span title="Verified Reseller">
-                <ShieldCheck className="w-3.5 h-3.5 text-brand-400 shrink-0" />
+            {isPrivate ? (
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                <UserCheck className="w-3 h-3 text-[#059669]" />
+                Private Account
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-800 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                🤝 Shared Account
               </span>
             )}
           </div>
 
-          <div className="flex items-center gap-1 text-amber-400 font-semibold text-[11px]">
-            <Star className="w-3.5 h-3.5 fill-amber-400" />
-            <span>{listing.seller.rating.toFixed(1)}</span>
-            <span className="text-slate-400">({listing.seller.totalSales})</span>
+          {/* Price & Spec Pills */}
+          <div className="flex flex-wrap items-center gap-2 py-2.5 border-t border-slate-100">
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-base font-extrabold text-[#059669]">
+                {formatCurrency(listing.price)}
+              </span>
+              <span className="text-[11px] text-[#64748B] font-medium">
+                /{listing.durationMonths === 1 ? 'mo' : `${listing.durationMonths}m`}
+              </span>
+              {listing.originalPrice && listing.originalPrice > listing.price && (
+                <span className="text-[11px] text-[#94A3B8] line-through ml-0.5">
+                  {formatCurrency(listing.originalPrice)}
+                </span>
+              )}
+            </div>
+            <span className="px-2 py-0.5 rounded bg-slate-100 border border-[#E2E8F0] text-[10px] font-semibold text-[#64748B]">
+              {listing.deviceLimit || '1 Seat'}
+            </span>
+            <span className="px-2 py-0.5 rounded bg-slate-100 border border-[#E2E8F0] text-[10px] font-semibold text-[#64748B] capitalize">
+              {accessLabel.toLowerCase()}
+            </span>
           </div>
+        </Link>
+      </div>
+
+      {/* Host details & Bottom buttons */}
+      <div className="pt-3 border-t border-slate-100 mt-2 flex flex-col gap-3">
+        {/* Host Name, Rating & Online Status */}
+        <div className="flex items-center justify-between text-xs">
+          <div className="font-semibold text-[#101828] uppercase tracking-tight truncate max-w-[170px]">
+            {listing.seller.displayName}{' '}
+            <span className="text-amber-500 font-bold">★ {listing.seller.rating.toFixed(1)}</span>{' '}
+            <span className="text-[#94A3B8] font-normal">({listing.seller.totalSales})</span>
+          </div>
+          <span className="text-[10px] font-bold text-[#059669] bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+            Instant
+          </span>
         </div>
 
-        {/* Action Buttons */}
-        <div className="grid grid-cols-2 gap-2">
+        {/* Buttons: Add to Cart and Access Now */}
+        <div className="flex items-center gap-2">
           <button
             onClick={handleAddToCart}
-            className="py-2 px-3 rounded-xl bg-surface-200 hover:bg-surface-300 border border-surface-300 text-xs font-semibold text-slate-200 hover:text-white flex items-center justify-center gap-1.5 transition-all"
+            className="py-2 px-3 rounded-xl border border-[#E2E8F0] hover:bg-slate-50 text-xs font-bold text-[#101828] flex items-center justify-center gap-1 transition-all shrink-0 cursor-pointer"
+            title="Add to Cart"
           >
-            <ShoppingBag className="w-3.5 h-3.5" />
-            Add to Cart
+            Add <ShoppingCart className="w-3.5 h-3.5 ml-0.5 text-[#64748B]" />
           </button>
           <button
             onClick={handleBuyNow}
-            className="py-2 px-3 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-500 hover:from-brand-500 hover:to-indigo-400 text-xs font-bold text-white shadow-glow flex items-center justify-center gap-1.5 transition-all"
+            className="flex-1 py-2 px-4 rounded-xl bg-[#059669] hover:bg-[#047857] text-xs font-bold text-white shadow-xs transition-all text-center cursor-pointer active:scale-98"
           >
-            <Zap className="w-3.5 h-3.5 text-amber-300" />
-            Buy Now
+            Access Now
           </button>
         </div>
       </div>

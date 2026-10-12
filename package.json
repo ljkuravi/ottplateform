@@ -8,7 +8,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run dev:api & npm run dev:web",
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:web\"",
     "dev:api": "npm --workspace=apps/api run start:dev",
     "dev:web": "npm --workspace=apps/web run dev",
     "build": "npm run build:packages && npm run build:api && npm run build:web",
@@ -23,11 +23,12 @@
     "lint": "npm --workspace=apps/api run lint && npm --workspace=apps/web run lint"
   },
   "devDependencies": {
-    "@types/node": "^22.10.1",
-    "typescript": "^5.7.2",
-    "prisma": "^6.4.1",
     "@prisma/client": "^6.4.1",
-    "tsx": "^4.19.2"
+    "@types/node": "^22.10.1",
+    "concurrently": "^10.0.6",
+    "prisma": "^6.4.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

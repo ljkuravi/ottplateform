@@ -688,9 +688,10 @@ export class AdminService {
   }
 
   async updateSetting(key: string, value: string) {
-    return this.prisma.systemSetting.update({
+    return this.prisma.systemSetting.upsert({
       where: { key },
-      data: { value },
+      update: { value },
+      create: { key, value, description: 'Marketplace configuration parameter' },
     });
   }
 }

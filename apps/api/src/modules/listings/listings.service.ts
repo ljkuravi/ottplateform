@@ -205,6 +205,7 @@ export class ListingsService {
           price: dto.price,
           originalPrice: dto.originalPrice,
           accessType: dto.accessType,
+          accountType: dto.accountType || (dto.accessType === 'PRIVATE_ACCOUNT' ? 'Private' : 'Shared'),
           deviceLimit: dto.deviceLimit,
           quality: dto.quality,
           region: dto.region,
@@ -299,6 +300,27 @@ export class ListingsService {
           status: availableCount > 0 && listing.status === ListingStatus.SOLD_OUT ? ListingStatus.ACTIVE : undefined,
         },
       });
+    });
+  }
+
+  async deleteListing(userId: string, id: string) {
+    const listing = await this.prisma.listing.findUnique({
+      where: { id },
+      include: { seller: true },
+    });
+
+    if (!listing) {
+      throw new NotFoundException('Listing not found');
+    }
+
+    if (listing.seller.userId !== userId) {
+      throw new ForbiddenException('You can only delete your own listings');
+    }
+
+    return this.prisma.$transaction(async (tx) => {
+      await tx.listingInventory.deleteMany({ where: { listingId: id } });
+      await tx.cartItem.deleteMany({ where: { listingId: id } });
+      return tx.listing.delete({ where: { id } });
     });
   }
 }

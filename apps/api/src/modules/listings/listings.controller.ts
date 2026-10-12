@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Param, Query, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Query, Body, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { ListingsService } from './listings.service';
 import { CreateListingDto, UpdateListingDto, AddInventoryDto } from './dto/listing.dto';
@@ -53,6 +53,17 @@ export class ListingsController {
     return this.listingsService.updateListing(userId, id, dto);
   }
 
+  @Delete(':id')
+  @Roles(RoleType.SELLER, RoleType.ADMIN, RoleType.SUPER_ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete listing (Seller only)' })
+  async deleteListing(
+    @CurrentUser('id') userId: string,
+    @Param('id') id: string,
+  ) {
+    return this.listingsService.deleteListing(userId, id);
+  }
+
   @Post(':id/inventory')
   @Roles(RoleType.SELLER, RoleType.ADMIN, RoleType.SUPER_ADMIN)
   @ApiBearerAuth()
@@ -65,3 +76,4 @@ export class ListingsController {
     return this.listingsService.addInventory(userId, id, dto);
   }
 }
+

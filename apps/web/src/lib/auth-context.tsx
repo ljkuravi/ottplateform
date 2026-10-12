@@ -37,9 +37,13 @@ interface AuthContextType {
   isLoading: boolean;
   unreadCount: number;
   cartCount: number;
-  login: (tokens: { accessToken: string; refreshToken: string }, user: User) => Promise<void>;
+  login: (tokens: { accessToken: string; refreshToken: string }, userData: User) => Promise<void>;
   logout: () => void;
   refreshProfile: () => Promise<void>;
+  activeMode: 'BUYER' | 'SELLER';
+  setActiveMode: (mode: 'BUYER' | 'SELLER') => void;
+  toggleMode: () => void;
+  isApprovedSeller: boolean;
   isSeller: boolean;
   isAdmin: boolean;
 }
@@ -55,6 +59,10 @@ const AuthContext = createContext<AuthContextType>({
   login: async () => {},
   logout: () => {},
   refreshProfile: async () => {},
+  activeMode: 'BUYER',
+  setActiveMode: () => {},
+  toggleMode: () => {},
+  isApprovedSeller: false,
   isSeller: false,
   isAdmin: false,
 });
@@ -110,6 +118,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (tokens: { accessToken: string; refreshToken: string }, userData: User) => {
     localStorage.setItem('subvault_access_token', tokens.accessToken);
     localStorage.setItem('subvault_refresh_token', tokens.refreshToken);
+    localStorage.setItem('subvault_active_mode', 'BUYER');
+    setActiveModeState('BUYER');
     setUser(userData);
     await refreshProfile();
   };
@@ -118,6 +128,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     disconnectSocket();
     localStorage.removeItem('subvault_access_token');
     localStorage.removeItem('subvault_refresh_token');
+    localStorage.removeItem('subvault_active_mode');
+    setActiveModeState('BUYER');
     setUser(null);
     setWallet(null);
     setSellerProfile(null);
@@ -125,7 +137,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     window.location.href = '/';
   };
 
-  const isSeller = user?.role === 'SELLER' || user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN';
+  const [activeMode, setActiveModeState] = useState<'BUYER' | 'SELLER'>('BUYER');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedMode = localStorage.getItem('subvault_active_mode') as 'BUYER' | 'SELLER' | null;
+      if (savedMode === 'SELLER' || savedMode === 'BUYER') {
+        setActiveModeState(savedMode);
+      }
+    }
+  }, []);
+
+  const setActiveMode = (mode: 'BUYER' | 'SELLER') => {
+    setActiveModeState(mode);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('subvault_active_mode', mode);
+    }
+  };
+
+  const toggleMode = () => {
+    const next = activeMode === 'SELLER' ? 'BUYER' : 'SELLER';
+    setActiveMode(next);
+  };
+
+  const isApprovedSeller = Boolean(
+    user?.role === 'SELLER' ||
+    sellerProfile?.status === 'APPROVED' ||
+    user?.role === 'ADMIN' ||
+    user?.role === 'SUPER_ADMIN'
+  );
+  const isSeller = isApprovedSeller && activeMode === 'SELLER';
   const isAdmin = user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN';
 
   return (
@@ -141,6 +182,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         login,
         logout,
         refreshProfile,
+        activeMode,
+        setActiveMode,
+        toggleMode,
+        isApprovedSeller,
         isSeller,
         isAdmin,
       }}

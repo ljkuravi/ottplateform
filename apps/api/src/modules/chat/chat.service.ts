@@ -20,8 +20,30 @@ export class ChatService {
             orderNumber: true,
             totalAmount: true,
             status: true,
+            createdAt: true,
+            buyer: {
+              select: { id: true, fullName: true, email: true },
+            },
             items: {
-              select: { listingTitle: true, planName: true },
+              select: {
+                id: true,
+                listingTitle: true,
+                planName: true,
+                durationMonths: true,
+                unitPrice: true,
+                listing: {
+                  select: {
+                    accessType: true,
+                    accountType: true,
+                    deviceLimit: true,
+                    quality: true,
+                    deliveryType: true,
+                    platform: {
+                      select: { name: true, logoUrl: true },
+                    },
+                  },
+                },
+              },
             },
           },
         },
